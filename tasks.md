@@ -36,7 +36,7 @@
 - [x] Build sort menu
 - [x] Add swipe-to-delete flow
 - [x] Remove reminders after deleting a birthday
-- [ ] Add UI tests for empty state and list rendering
+- [x] Add UI tests for empty state and list rendering
 
 ## 5. Add/Edit Birthday Flow
 
@@ -53,7 +53,7 @@
 - [x] Build settings view model
 - [x] Build settings screen
 - [x] Handle denied notification permission state
-- [ ] Add UI tests for settings interactions
+- [x] Add UI tests for settings interactions
 
 ## 7. Reminder Scheduling
 
@@ -63,11 +63,13 @@
 - [x] Rebuild reminders after settings changes
 - [x] Remove reminders for records with reminders disabled
 
-## 8. iCloud Sync
+## 8. Sync Readiness
 
-- [x] Enable iCloud / CloudKit capability
-- [x] Confirm SwiftData models sync correctly
-- [x] Verify app still builds after capability changes
+- [x] Add a CloudKit-capable SwiftData configuration path in code
+- [x] Confirm SwiftData models are compatible with CloudKit requirements
+- [x] Verify app still builds after sync-related model changes
+- [x] Reconfigure the project to run without iCloud capability on Personal Team
+- [ ] Re-enable iCloud / CloudKit capability after moving to a paid Apple Developer account
 - [ ] Set Apple Team and confirm iCloud container in Xcode Signing & Capabilities
 - [ ] Verify sync on a second signed-in device or simulator pair
 
@@ -87,5 +89,5 @@
   - enable reminders
   - deny notifications and verify warning UI
   - disable reminders for one person
-  - verify a newly added birthday syncs to another device
-  - verify a settings change syncs to another device
+  - after enabling paid developer account support, verify a newly added birthday syncs to another device
+  - after enabling paid developer account support, verify a settings change syncs to another device

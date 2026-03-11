@@ -2,7 +2,7 @@
 
 ## Goal
 
-Build an iPhone-only birthday app that lets users manually record birthdays, receive configurable reminders, and sync data across their Apple devices with iCloud.
+Build an iPhone-only birthday app that lets users manually record birthdays, receive configurable reminders, and store data locally on device. When a paid Apple Developer account is available, the app should be able to re-enable iCloud sync across the user's Apple devices.
 
 ## Product Scope
 
@@ -18,8 +18,9 @@ Build an iPhone-only birthday app that lets users manually record birthdays, rec
 - Per-person reminder disable switch
 - Configurable notification time
 - February 29 fallback handling in non-leap years
-- iCloud sync for birthday records and app settings
 - Local notifications
+- Local on-device persistence with SwiftData
+- Future-ready iCloud sync support for birthday records and app settings
 
 ### Out of Scope
 
@@ -134,10 +135,11 @@ Opening a notification can launch the app to the birthday list in v1.
 
 ## Sync Behavior
 
-- Sync birthday records with iCloud
-- Sync app settings with iCloud
+- In the current Personal Team setup, store birthday records locally with SwiftData
+- In the future paid-developer setup, sync birthday records with iCloud
+- In the future paid-developer setup, sync app settings with iCloud
 - Do not sync notification delivery state
-- Each device schedules its own local notifications from synced data
+- Each device schedules its own local notifications from local or synced data
 
 ## Core Flows
 
@@ -188,7 +190,8 @@ Opening a notification can launch the app to the birthday list in v1.
 
 - SwiftUI for UI
 - SwiftData for persistence
-- CloudKit-backed iCloud sync for SwiftData
+- Default local-only SwiftData configuration for Personal Team development
+- Future CloudKit-backed iCloud sync path for SwiftData when developer account support is available
 - UserNotifications for local reminders
 - Small focused services for:
   - date calculation
