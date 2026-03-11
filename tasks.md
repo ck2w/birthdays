@@ -2,82 +2,90 @@
 
 ## 1. Project Setup
 
-- [ ] Create the `Birthdays` iOS app project with SwiftUI
-- [ ] Add unit test and UI test targets
-- [ ] Confirm the empty project builds with `xcodebuild`
+- [x] Create the `Birthdays` iOS app project with SwiftUI
+- [x] Add unit test and UI test targets
+- [x] Confirm the empty project builds with `xcodebuild`
 
 ## 2. Models and Core Logic
 
-- [ ] Add `BirthdayRecord`
-- [ ] Add `AppSettings`
-- [ ] Add `ReminderOffset`
-- [ ] Add `Feb29Fallback`
-- [ ] Write tests for next birthday calculation
-- [ ] Write tests for age calculation
-- [ ] Write tests for leap day handling
-- [ ] Implement `BirthdayCalculator`
-- [ ] Write tests for date/name sorting
-- [ ] Implement `BirthdaySorter`
+- [x] Add `BirthdayRecord`
+- [x] Add `AppSettings`
+- [x] Add `ReminderOffset`
+- [x] Add `Feb29Fallback`
+- [x] Write tests for next birthday calculation
+- [x] Write tests for age calculation
+- [x] Write tests for leap day handling
+- [x] Implement `BirthdayCalculator`
+- [x] Write tests for date/name sorting
+- [x] Implement `BirthdaySorter`
 
 ## 3. Persistence and App Settings
 
-- [ ] Wire SwiftData container into the app
-- [ ] Add `AppSettingsStore`
-- [ ] Write tests for default settings creation
-- [ ] Write tests for settings updates persistence
+- [x] Wire SwiftData container into the app
+- [x] Add `AppSettingsStore`
+- [x] Write tests for default settings creation
+- [x] Write tests for settings updates persistence
 
 ## 4. Birthday List
 
-- [ ] Add list presentation/view model
-- [ ] Map records into month sections and row view data
-- [ ] Build birthday list screen
-- [ ] Build birthday row view
-- [ ] Build empty state view
-- [ ] Build sort menu
+- [x] Add list presentation/view model
+- [x] Map records into month sections and row view data
+- [x] Build birthday list screen
+- [x] Build birthday row view
+- [x] Build empty state view
+- [x] Build sort menu
+- [x] Add swipe-to-delete flow
+- [x] Remove reminders after deleting a birthday
 - [ ] Add UI tests for empty state and list rendering
 
 ## 5. Add/Edit Birthday Flow
 
-- [ ] Add editor view model
-- [ ] Add validation for required name and month/day
-- [ ] Build add/edit birthday screen
-- [ ] Connect add flow from the list
-- [ ] Connect edit flow from tapping a row
-- [ ] Add tests for create and edit flows
+- [x] Add editor view model
+- [x] Add validation for required name and month/day
+- [x] Build add/edit birthday screen
+- [x] Connect add flow from the list
+- [x] Connect edit flow from tapping a row
+- [x] Add tests for create and edit flows
 
 ## 6. Settings and Permissions
 
-- [ ] Add notification permission client
-- [ ] Build settings view model
-- [ ] Build settings screen
-- [ ] Handle denied notification permission state
+- [x] Add notification permission client
+- [x] Build settings view model
+- [x] Build settings screen
+- [x] Handle denied notification permission state
 - [ ] Add UI tests for settings interactions
 
 ## 7. Reminder Scheduling
 
-- [ ] Write scheduler tests
-- [ ] Implement `ReminderScheduler`
-- [ ] Schedule reminders after create/edit when allowed
-- [ ] Rebuild reminders after settings changes
-- [ ] Remove reminders for records with reminders disabled
+- [x] Write scheduler tests
+- [x] Implement `ReminderScheduler`
+- [x] Schedule reminders after create/edit when allowed
+- [x] Rebuild reminders after settings changes
+- [x] Remove reminders for records with reminders disabled
 
 ## 8. iCloud Sync
 
-- [ ] Enable iCloud / CloudKit capability
-- [ ] Confirm SwiftData models sync correctly
-- [ ] Verify app still builds after capability changes
+- [x] Enable iCloud / CloudKit capability
+- [x] Confirm SwiftData models sync correctly
+- [x] Verify app still builds after capability changes
+- [ ] Set Apple Team and confirm iCloud container in Xcode Signing & Capabilities
+- [ ] Verify sync on a second signed-in device or simulator pair
 
 ## 9. Final Verification
 
 - [ ] Run full unit test suite
 - [ ] Run full UI test suite
-- [ ] Build the app successfully with `xcodebuild`
+- [x] Build the app successfully with `xcodebuild`
 - [ ] Manually verify:
   - create birthday without year
   - create birthday with year
   - sort by date
   - sort by first name
   - sort by last name
+  - delete a birthday and confirm it disappears
+  - verify deleted birthday reminder is removed
   - enable reminders
   - deny notifications and verify warning UI
   - disable reminders for one person
+  - verify a newly added birthday syncs to another device
+  - verify a settings change syncs to another device
