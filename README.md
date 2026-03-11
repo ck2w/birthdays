@@ -1,10 +1,10 @@
-# Birthdays
+# Birthdays 🎂
 
-Birthdays is an iPhone app for tracking birthdays, managing reminder timing, and keeping a lightweight birthday list in a clean native interface.
+Birthdays is a small iPhone app for keeping track of birthdays, setting reminders, and making sure important dates do not quietly sneak past you.
 
-The current project setup is optimized for local development with a Personal Team in Xcode. Birthday data is stored locally with SwiftData, and the codebase keeps a future path open for CloudKit-backed iCloud sync when a paid Apple Developer account is available.
+Right now the project is set up for local development with a Personal Team in Xcode. Birthday data is stored locally with SwiftData, and the app keeps a future path open for CloudKit-backed iCloud sync when a paid Apple Developer account is available.
 
-## Features
+## What It Does ✨
 
 - Manual birthday creation and editing
 - Required month/day with optional birth year
@@ -18,7 +18,7 @@ The current project setup is optimized for local development with a Personal Tea
 - Local persistence with SwiftData
 - Local notifications with `UserNotifications`
 
-## Current Status
+## Current Status 🚧
 
 Implemented:
 
@@ -35,14 +35,14 @@ Not currently available in Personal Team mode:
 - Real iCloud / CloudKit sync
 - Cross-device sync verification
 
-## Tech Stack
+## Tech Stack 🛠️
 
 - SwiftUI
 - SwiftData
 - UserNotifications
 - XCTest / XCUITest
 
-## Project Structure
+## Project Structure 📁
 
 ```text
 Birthdays/
@@ -61,7 +61,7 @@ Birthdays/
 └── tasks.md
 ```
 
-## Getting Started
+## Getting Started 🚀
 
 ### Requirements
 
@@ -75,7 +75,7 @@ Birthdays/
 3. Choose an iPhone simulator.
 4. Press `Run`.
 
-## Personal Team Note
+## Personal Team Note 👀
 
 If you use a free Personal Team in Xcode, the app runs in local-only mode.
 
@@ -91,7 +91,7 @@ When you later move to a paid Apple Developer account, you can re-enable:
 - CloudKit-backed SwiftData configuration
 - Cross-device sync verification
 
-## Testing
+## Testing 🧪
 
 Build from the command line:
 
@@ -111,14 +111,14 @@ Run UI tests:
 xcodebuild -project Birthdays/Birthdays.xcodeproj -scheme Birthdays -destination 'platform=iOS Simulator,name=iPhone 17 Pro' test -only-testing:BirthdaysUITests
 ```
 
-## Roadmap
+## Roadmap 🗺️
 
 - Finish full manual verification checklist
 - Stabilize full test runs in the local environment
 - Re-enable CloudKit when a paid developer account is available
 - Add CSV import/export in a later version
 
-## Documentation
+## Documentation 📚
 
 - [`spec.md`](spec.md): product and technical specification
 - [`tasks.md`](tasks.md): implementation checklist and remaining work
