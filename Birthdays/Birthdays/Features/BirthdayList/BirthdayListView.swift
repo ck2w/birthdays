@@ -46,6 +46,13 @@ struct BirthdayListView: View {
                                             BirthdayRowView(row: row)
                                         }
                                         .buttonStyle(.plain)
+                                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                            Button("Delete", role: .destructive) {
+                                                Task {
+                                                    await deleteBirthday(withID: row.id)
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -107,6 +114,23 @@ struct BirthdayListView: View {
 
     private var currentFallback: Feb29Fallback {
         appSettings.first?.feb29Fallback ?? .feb28
+    }
+
+    private func deleteBirthday(withID id: UUID) async {
+        guard let record = birthdays.first(where: { $0.id == id }) else {
+            return
+        }
+
+        do {
+            modelContext.delete(record)
+            try modelContext.save()
+
+            let settings = try AppSettingsStore(modelContext: modelContext).fetchOrCreate()
+            let records = try modelContext.fetch(FetchDescriptor<BirthdayRecord>())
+            try await ReminderScheduler().syncAll(records: records, settings: settings)
+        } catch {
+            assertionFailure("Failed to delete birthday: \(error)")
+        }
     }
 }
 
