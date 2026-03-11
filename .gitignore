@@ -1,2 +1,9 @@
 .DS_Store
 pic/.DS_Store
+pic/
+DerivedData/
+*.xcuserstate
+*.xccheckout
+*.xcscmblueprint
+xcuserdata/
+**/xcuserdata/

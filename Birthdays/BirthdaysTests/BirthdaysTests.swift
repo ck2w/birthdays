@@ -1,0 +1,128 @@
+//
+//  BirthdaysTests.swift
+//  BirthdaysTests
+//
+//  Created by Ken Chen on 3/11/26.
+//
+
+import XCTest
+@testable import Birthdays
+
+final class BirthdaysTests: XCTestCase {
+    private var calendar: Calendar!
+    private var calculator: BirthdayCalculator!
+    private var sorter: BirthdaySorter!
+
+    override func setUp() {
+        var gregorian = Calendar(identifier: .gregorian)
+        gregorian.timeZone = TimeZone(secondsFromGMT: 0)!
+        calendar = gregorian
+        calculator = BirthdayCalculator(calendar: gregorian)
+        sorter = BirthdaySorter(calculator: calculator)
+    }
+
+    override func tearDown() {
+        sorter = nil
+        calculator = nil
+        calendar = nil
+    }
+
+    func testNextBirthdayUsesCurrentYearWhenDateIsStillAhead() {
+        let record = BirthdayRecord(name: "Alex", month: 3, day: 14)
+        let today = makeDate(year: 2026, month: 3, day: 10)
+
+        let nextBirthday = calculator.nextBirthdayDate(for: record, today: today, fallback: .feb28)
+
+        XCTAssertEqual(nextBirthday, makeDate(year: 2026, month: 3, day: 14))
+    }
+
+    func testNextBirthdayRollsIntoNextYearWhenDateHasPassed() {
+        let record = BirthdayRecord(name: "Alex", month: 3, day: 9)
+        let today = makeDate(year: 2026, month: 3, day: 10)
+
+        let nextBirthday = calculator.nextBirthdayDate(for: record, today: today, fallback: .feb28)
+
+        XCTAssertEqual(nextBirthday, makeDate(year: 2027, month: 3, day: 9))
+    }
+
+    func testUpcomingAgeUsesBirthYearWhenPresent() {
+        let record = BirthdayRecord(name: "Alex", month: 3, day: 14, birthYear: 1992)
+        let today = makeDate(year: 2026, month: 3, day: 10)
+
+        let age = calculator.upcomingAge(for: record, today: today, fallback: .feb28)
+
+        XCTAssertEqual(age, 34)
+    }
+
+    func testUpcomingAgeIsNilWhenBirthYearMissing() {
+        let record = BirthdayRecord(name: "Alex", month: 3, day: 14)
+        let today = makeDate(year: 2026, month: 3, day: 10)
+
+        let age = calculator.upcomingAge(for: record, today: today, fallback: .feb28)
+
+        XCTAssertNil(age)
+    }
+
+    func testLeapDayMapsToFebruary28InNonLeapYear() {
+        let record = BirthdayRecord(name: "Leap", month: 2, day: 29, birthYear: 2000)
+        let today = makeDate(year: 2026, month: 2, day: 20)
+
+        let nextBirthday = calculator.nextBirthdayDate(for: record, today: today, fallback: .feb28)
+        let daysUntilBirthday = calculator.daysUntilBirthday(for: record, today: today, fallback: .feb28)
+        let age = calculator.upcomingAge(for: record, today: today, fallback: .feb28)
+
+        XCTAssertEqual(nextBirthday, makeDate(year: 2026, month: 2, day: 28))
+        XCTAssertEqual(daysUntilBirthday, 8)
+        XCTAssertEqual(age, 26)
+    }
+
+    func testDateSortOrdersByNextUpcomingBirthday() {
+        let today = makeDate(year: 2026, month: 3, day: 10)
+        let records = [
+            BirthdayRecord(name: "Taylor", month: 4, day: 1),
+            BirthdayRecord(name: "Alex", month: 3, day: 14),
+            BirthdayRecord(name: "Chris", month: 3, day: 12),
+        ]
+
+        let sorted = sorter.sort(records, by: .date, today: today, fallback: .feb28)
+
+        XCTAssertEqual(sorted.map(\.name), ["Chris", "Alex", "Taylor"])
+    }
+
+    func testFirstNameSortOrdersAlphabetically() {
+        let today = makeDate(year: 2026, month: 3, day: 10)
+        let records = [
+            BirthdayRecord(name: "Taylor Smith", month: 4, day: 1),
+            BirthdayRecord(name: "Alex Brown", month: 3, day: 14),
+            BirthdayRecord(name: "Chris Young", month: 3, day: 12),
+        ]
+
+        let sorted = sorter.sort(records, by: .firstName, today: today, fallback: .feb28)
+
+        XCTAssertEqual(sorted.map(\.name), ["Alex Brown", "Chris Young", "Taylor Smith"])
+    }
+
+    func testLastNameSortOrdersAlphabetically() {
+        let today = makeDate(year: 2026, month: 3, day: 10)
+        let records = [
+            BirthdayRecord(name: "Taylor Smith", month: 4, day: 1),
+            BirthdayRecord(name: "Alex Brown", month: 3, day: 14),
+            BirthdayRecord(name: "Chris Young", month: 3, day: 12),
+        ]
+
+        let sorted = sorter.sort(records, by: .lastName, today: today, fallback: .feb28)
+
+        XCTAssertEqual(sorted.map(\.name), ["Alex Brown", "Taylor Smith", "Chris Young"])
+    }
+
+    private func makeDate(year: Int, month: Int, day: Int) -> Date {
+        let components = DateComponents(
+            calendar: calendar,
+            timeZone: calendar.timeZone,
+            year: year,
+            month: month,
+            day: day
+        )
+        return calendar.date(from: components)!
+    }
+}
