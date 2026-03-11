@@ -32,6 +32,7 @@ struct SettingsView: View {
                             }
                         }
                     ))
+                    .accessibilityIdentifier("settings_reminders_toggle")
 
                     Picker("Send Reminder", selection: $viewModel.reminderOffset) {
                         Text("On the day").tag(ReminderOffset.sameDay)
@@ -39,12 +40,14 @@ struct SettingsView: View {
                         Text("2 days before").tag(ReminderOffset.twoDaysBefore)
                         Text("7 days before").tag(ReminderOffset.sevenDaysBefore)
                     }
+                    .accessibilityIdentifier("settings_reminder_offset_picker")
 
                     DatePicker(
                         "Notification Time",
                         selection: $viewModel.notificationTime,
                         displayedComponents: .hourAndMinute
                     )
+                    .accessibilityIdentifier("settings_notification_time_picker")
                 }
 
                 if viewModel.permissionStatus == .denied {
@@ -59,6 +62,7 @@ struct SettingsView: View {
                     Picker("Send Reminder On", selection: $viewModel.feb29Fallback) {
                         Text("February 28").tag(Feb29Fallback.feb28)
                     }
+                    .accessibilityIdentifier("settings_feb29_picker")
                 }
             }
             .navigationTitle("Settings")
@@ -68,6 +72,7 @@ struct SettingsView: View {
                     Button("Done") {
                         dismiss()
                     }
+                    .accessibilityIdentifier("settings_done_button")
                 }
             }
         }

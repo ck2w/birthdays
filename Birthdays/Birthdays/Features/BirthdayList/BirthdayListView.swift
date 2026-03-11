@@ -70,6 +70,7 @@ struct BirthdayListView: View {
                         Image(systemName: "line.3.horizontal")
                     }
                     .accessibilityLabel("Menu")
+                    .accessibilityIdentifier("birthday_menu_button")
                 }
 
                 ToolbarItemGroup(placement: .topBarTrailing) {
@@ -79,6 +80,7 @@ struct BirthdayListView: View {
                         Image(systemName: "plus")
                     }
                     .accessibilityLabel("Add birthday")
+                    .accessibilityIdentifier("birthday_add_button")
                 }
             }
         }

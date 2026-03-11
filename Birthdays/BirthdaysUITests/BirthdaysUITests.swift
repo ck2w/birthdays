@@ -8,34 +8,66 @@
 import XCTest
 
 final class BirthdaysUITests: XCTestCase {
+    private var app: XCUIApplication!
 
     override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-
-        // In UI tests it is usually best to stop immediately when a failure occurs.
         continueAfterFailure = false
-
-        // In UI tests it’s important to set the initial state - such as interface orientation - required for your tests before they run. The setUp method is a good place to do this.
+        app = XCUIApplication()
+        app.launchArguments = ["UITEST"]
     }
 
     override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        app = nil
     }
 
     @MainActor
-    func testExample() throws {
-        // UI tests must launch the application that they test.
-        let app = XCUIApplication()
+    func testEmptyStateAndCreateBirthdayFlow() throws {
         app.launch()
 
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        XCTAssertTrue(app.staticTexts["empty_state_title"].waitForExistence(timeout: 2))
+        XCTAssertEqual(app.staticTexts["empty_state_title"].label, "No birthdays yet")
+
+        app.buttons["empty_state_add_button"].tap()
+
+        let nameField = app.textFields["birthday_name_field"]
+        XCTAssertTrue(nameField.waitForExistence(timeout: 2))
+        nameField.tap()
+        nameField.typeText("Taylor Swift")
+
+        app.buttons["birthday_save_button"].tap()
+
+        XCTAssertTrue(app.staticTexts["Taylor Swift"].waitForExistence(timeout: 2))
     }
 
     @MainActor
-    func testLaunchPerformance() throws {
-        // This measures how long it takes to launch your application.
-        measure(metrics: [XCTApplicationLaunchMetric()]) {
-            XCUIApplication().launch()
-        }
+    func testSeededBirthdayListRendersAndSortMenuOpens() throws {
+        app.launchArguments += ["UITEST_SEED_BIRTHDAY"]
+        app.launch()
+
+        XCTAssertTrue(app.staticTexts["Alex Johnson"].waitForExistence(timeout: 2))
+
+        app.buttons["Sort birthdays"].tap()
+
+        XCTAssertTrue(app.buttons["Sort by First Name"].waitForExistence(timeout: 2))
+        XCTAssertTrue(app.buttons["Sort by Last Name"].exists)
+        app.buttons["Sort by Last Name"].tap()
+    }
+
+    @MainActor
+    func testSettingsScreenInteractions() throws {
+        app.launch()
+
+        app.buttons["birthday_menu_button"].tap()
+
+        let remindersToggle = app.switches["settings_reminders_toggle"]
+        XCTAssertTrue(remindersToggle.waitForExistence(timeout: 2))
+        remindersToggle.tap()
+
+        XCTAssertTrue(app.otherElements["settings_reminder_offset_picker"].exists)
+        XCTAssertTrue(app.otherElements["settings_notification_time_picker"].exists)
+        XCTAssertTrue(app.otherElements["settings_feb29_picker"].exists)
+
+        app.buttons["settings_done_button"].tap()
+        XCTAssertTrue(app.navigationBars["Birthdays"].waitForExistence(timeout: 2))
     }
 }

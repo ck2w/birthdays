@@ -33,12 +33,14 @@ struct BirthdayEditorView: View {
                             Text(monthName(for: month)).tag(month)
                         }
                     }
+                    .accessibilityIdentifier("birthday_month_picker")
 
                     Picker("Day", selection: $viewModel.day) {
                         ForEach(1...31, id: \.self) { day in
                             Text("\(day)").tag(day)
                         }
                     }
+                    .accessibilityIdentifier("birthday_day_picker")
 
                     TextField("Birth Year (Optional)", text: $viewModel.birthYearText)
                         .keyboardType(.numberPad)
@@ -47,6 +49,7 @@ struct BirthdayEditorView: View {
 
                 Section("Reminders") {
                     Toggle("Disable reminders for this person", isOn: $viewModel.remindersDisabled)
+                        .accessibilityIdentifier("birthday_disable_reminders_toggle")
                 }
 
                 if let validationMessage = viewModel.validationMessage {

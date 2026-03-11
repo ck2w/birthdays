@@ -21,14 +21,17 @@ struct EmptyStateView: View {
 
             Text(title)
                 .font(.title3.bold())
+                .accessibilityIdentifier("empty_state_title")
 
             Text(message)
                 .font(.body)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
+                .accessibilityIdentifier("empty_state_message")
 
             Button(buttonTitle, action: action)
                 .buttonStyle(.borderedProminent)
+                .accessibilityIdentifier("empty_state_add_button")
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(24)

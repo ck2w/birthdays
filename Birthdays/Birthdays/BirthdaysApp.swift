@@ -16,14 +16,25 @@ struct BirthdaysApp: App {
             AppSettings.self,
         ])
 
-        let configuration = ModelConfiguration(
-            schema: schema,
-            isStoredInMemoryOnly: false,
-            cloudKitDatabase: .automatic
-        )
-
         do {
-            return try ModelContainer(for: schema, configurations: [configuration])
+            let configuration: ModelConfiguration
+            if AppLaunchOptions.isRunningPreviews || AppLaunchOptions.isUITesting {
+                configuration = ModelConfiguration(
+                    schema: schema,
+                    isStoredInMemoryOnly: true,
+                    cloudKitDatabase: .none
+                )
+            } else {
+                configuration = ModelConfiguration(
+                    schema: schema,
+                    isStoredInMemoryOnly: false,
+                    cloudKitDatabase: .automatic
+                )
+            }
+
+            let container = try ModelContainer(for: schema, configurations: [configuration])
+            try AppLaunchOptions.configure(container: container)
+            return container
         } catch {
             fatalError("Failed to create ModelContainer: \(error)")
         }
