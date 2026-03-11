@@ -115,6 +115,46 @@ final class BirthdaysTests: XCTestCase {
         XCTAssertEqual(sorted.map(\.name), ["Alex Brown", "Taylor Smith", "Chris Young"])
     }
 
+    func testListPresentationGroupsRecordsByDisplayMonth() {
+        let today = makeDate(year: 2026, month: 3, day: 10)
+        let viewModel = BirthdayListViewModel(calculator: calculator, sorter: sorter)
+        let records = [
+            BirthdayRecord(name: "Alex", month: 3, day: 14, birthYear: 1992),
+            BirthdayRecord(name: "Chris", month: 4, day: 2),
+            BirthdayRecord(name: "Taylor", month: 4, day: 30, birthYear: 1990),
+        ]
+
+        let sections = viewModel.makeSections(
+            records: records,
+            sortOption: .date,
+            today: today,
+            fallback: .feb28
+        )
+
+        XCTAssertEqual(sections.map(\.title), ["March", "April"])
+        XCTAssertEqual(sections[0].rows.map(\.name), ["Alex"])
+        XCTAssertEqual(sections[1].rows.map(\.name), ["Chris", "Taylor"])
+    }
+
+    func testListPresentationUsesUpcomingAgeWhenBirthYearExists() {
+        let today = makeDate(year: 2026, month: 3, day: 10)
+        let viewModel = BirthdayListViewModel(calculator: calculator, sorter: sorter)
+        let records = [
+            BirthdayRecord(name: "Alex", month: 3, day: 14, birthYear: 1992),
+            BirthdayRecord(name: "Chris", month: 3, day: 15),
+        ]
+
+        let sections = viewModel.makeSections(
+            records: records,
+            sortOption: .date,
+            today: today,
+            fallback: .feb28
+        )
+
+        XCTAssertEqual(sections[0].rows[0].subtitle, "Turns 34 on March 14")
+        XCTAssertEqual(sections[0].rows[1].subtitle, "Birthday on March 15")
+    }
+
     private func makeDate(year: Int, month: Int, day: Int) -> Date {
         let components = DateComponents(
             calendar: calendar,
