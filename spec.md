@@ -39,6 +39,7 @@ Build an iPhone-only birthday app that lets users manually record birthdays, rec
 - Default home screen
 - Shows all birthdays
 - Groups rows by month
+- Uses a native iOS list layout so rows support standard swipe actions
 - Sorts by next upcoming birthday by default
 - Toolbar includes sort and add actions
 - Each row shows:
@@ -67,6 +68,7 @@ Example row copy:
 ### Settings
 
 - Global reminder enable/disable
+- Requests notification permission the first time reminders are enabled
 - Reminder offset options:
   - same day
   - 1 day before

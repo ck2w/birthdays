@@ -79,15 +79,15 @@
 - [ ] Run full UI test suite
 - [x] Build the app successfully with `xcodebuild`
 - [ ] Manually verify:
-  - create birthday without year
-  - create birthday with year
-  - sort by date
-  - sort by first name
-  - sort by last name
-  - delete a birthday and confirm it disappears
-  - verify deleted birthday reminder is removed
-  - enable reminders
-  - deny notifications and verify warning UI
-  - disable reminders for one person
-  - after enabling paid developer account support, verify a newly added birthday syncs to another device
-  - after enabling paid developer account support, verify a settings change syncs to another device
+  - [ ] create birthday without year
+  - [ ] create birthday with year
+  - [ ] sort by date
+  - [ ] sort by first name
+  - [ ] sort by last name
+  - [ ] delete a birthday and confirm it disappears
+  - [ ] verify deleted birthday reminder is removed
+  - [x] enable reminders
+  - [x] deny notifications and verify warning UI
+  - [ ] disable reminders for one person
+  - [ ] after enabling paid developer account support, verify a newly added birthday syncs to another device
+  - [ ] after enabling paid developer account support, verify a settings change syncs to another device
