@@ -10,14 +10,14 @@ import SwiftData
 
 @Model
 final class BirthdayRecord {
-    @Attribute(.unique) var id: UUID
-    var name: String
-    var month: Int
-    var day: Int
+    var id: UUID = UUID()
+    var name: String = ""
+    var month: Int = 1
+    var day: Int = 1
     var birthYear: Int?
-    var remindersDisabled: Bool
-    var createdAt: Date
-    var updatedAt: Date
+    var remindersDisabled: Bool = false
+    var createdAt: Date = Date.now
+    var updatedAt: Date = Date.now
 
     init(
         id: UUID = UUID(),

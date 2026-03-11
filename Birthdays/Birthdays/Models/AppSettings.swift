@@ -10,12 +10,12 @@ import SwiftData
 
 @Model
 final class AppSettings {
-    @Attribute(.unique) var id: UUID
-    var remindersEnabled: Bool
-    var reminderOffset: ReminderOffset
-    var notificationHour: Int
-    var notificationMinute: Int
-    var feb29Fallback: Feb29Fallback
+    var id: UUID = UUID()
+    var remindersEnabled: Bool = false
+    var reminderOffset: ReminderOffset = ReminderOffset.oneDayBefore
+    var notificationHour: Int = 8
+    var notificationMinute: Int = 0
+    var feb29Fallback: Feb29Fallback = Feb29Fallback.feb28
 
     init(
         id: UUID = UUID(),
