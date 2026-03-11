@@ -29,37 +29,32 @@ struct BirthdayListView: View {
                         action: { activeSheet = .create }
                     )
                 } else {
-                    ScrollView {
-                        LazyVStack(alignment: .leading, spacing: 18) {
-                            ForEach(sections) { section in
-                                VStack(alignment: .leading, spacing: 10) {
-                                    Text(section.title)
-                                        .font(.title3.weight(.semibold))
-                                        .foregroundStyle(.secondary)
-
-                                    ForEach(section.rows) { row in
-                                        Button {
-                                            if let record = birthdays.first(where: { $0.id == row.id }) {
-                                                activeSheet = .edit(record)
-                                            }
-                                        } label: {
-                                            BirthdayRowView(row: row)
+                    List {
+                        ForEach(sections) { section in
+                            Section(section.title) {
+                                ForEach(section.rows) { row in
+                                    Button {
+                                        if let record = birthdays.first(where: { $0.id == row.id }) {
+                                            activeSheet = .edit(record)
                                         }
-                                        .buttonStyle(.plain)
-                                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                            Button("Delete", role: .destructive) {
-                                                Task {
-                                                    await deleteBirthday(withID: row.id)
-                                                }
+                                    } label: {
+                                        BirthdayRowView(row: row)
+                                    }
+                                    .buttonStyle(.plain)
+                                    .listRowInsets(EdgeInsets(top: 10, leading: 16, bottom: 10, trailing: 16))
+                                    .listRowBackground(Color(.secondarySystemGroupedBackground))
+                                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                        Button("Delete", role: .destructive) {
+                                            Task {
+                                                await deleteBirthday(withID: row.id)
                                             }
                                         }
                                     }
                                 }
                             }
                         }
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 18)
                     }
+                    .scrollContentBackground(.hidden)
                     .background(Color(.systemGroupedBackground))
                 }
             }
