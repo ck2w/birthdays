@@ -14,6 +14,7 @@ struct BirthdayListView: View {
     @Query private var appSettings: [AppSettings]
     @State private var sortOption: BirthdaySortOption = .date
     @State private var activeSheet: BirthdaySheet?
+    @State private var showingSettings = false
 
     private let viewModel = BirthdayListViewModel()
 
@@ -58,7 +59,7 @@ struct BirthdayListView: View {
             .navigationTitle("Birthdays")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button(action: {}) {
+                    Button(action: { showingSettings = true }) {
                         Image(systemName: "line.3.horizontal")
                     }
                     .accessibilityLabel("Menu")
@@ -81,6 +82,9 @@ struct BirthdayListView: View {
             case .edit(let record):
                 BirthdayEditorView(record: record)
             }
+        }
+        .sheet(isPresented: $showingSettings) {
+            SettingsView()
         }
         .task {
             do {
