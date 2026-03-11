@@ -23,7 +23,12 @@ struct SettingsView: View {
                         set: { newValue in
                             viewModel.remindersEnabled = newValue
                             Task {
-                                try? await viewModel.handleReminderToggle(using: updateSettings)
+                                do {
+                                    try await viewModel.handleReminderToggle(using: updateSettings)
+                                    try await rescheduleReminders()
+                                } catch {
+                                    assertionFailure("Failed to update reminder settings: \(error)")
+                                }
                             }
                         }
                     ))
@@ -76,13 +81,13 @@ struct SettingsView: View {
             }
         }
         .onChange(of: viewModel.reminderOffset) { _, _ in
-            try? viewModel.persist(using: updateSettings)
+            persistSettingsAndReschedule()
         }
         .onChange(of: viewModel.notificationTime) { _, _ in
-            try? viewModel.persist(using: updateSettings)
+            persistSettingsAndReschedule()
         }
         .onChange(of: viewModel.feb29Fallback) { _, _ in
-            try? viewModel.persist(using: updateSettings)
+            persistSettingsAndReschedule()
         }
     }
 
@@ -95,6 +100,28 @@ struct SettingsView: View {
             settings.notificationMinute = incoming.notificationMinute
             settings.feb29Fallback = incoming.feb29Fallback
         }
+    }
+
+    private func persistSettingsAndReschedule() {
+        Task {
+            do {
+                try viewModel.persist(using: updateSettings)
+                try await rescheduleReminders()
+            } catch {
+                assertionFailure("Failed to persist reminder settings: \(error)")
+            }
+        }
+    }
+
+    private func rescheduleReminders() async throws {
+        let settings: AppSettings
+        if let existingSettings = appSettings.first {
+            settings = existingSettings
+        } else {
+            settings = try AppSettingsStore(modelContext: modelContext).fetchOrCreate()
+        }
+        let records = try modelContext.fetch(FetchDescriptor<BirthdayRecord>())
+        try await ReminderScheduler().syncAll(records: records, settings: settings)
     }
 }
 

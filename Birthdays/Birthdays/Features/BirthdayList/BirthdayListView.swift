@@ -88,7 +88,8 @@ struct BirthdayListView: View {
         }
         .task {
             do {
-                try AppSettingsStore(modelContext: modelContext).fetchOrCreate()
+                let settings = try AppSettingsStore(modelContext: modelContext).fetchOrCreate()
+                try await ReminderScheduler().syncAll(records: birthdays, settings: settings)
             } catch {
                 assertionFailure("Failed to load app settings: \(error)")
             }

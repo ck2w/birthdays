@@ -11,6 +11,7 @@ import SwiftUI
 struct BirthdayEditorView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
+    @Query private var appSettings: [AppSettings]
     @StateObject private var viewModel: BirthdayEditorViewModel
 
     init(record: BirthdayRecord? = nil) {
@@ -86,6 +87,9 @@ struct BirthdayEditorView: View {
                 }
                 try modelContext.save()
             }
+            Task {
+                try? await rescheduleReminders()
+            }
             dismiss()
         } catch {
             // Validation message is already set in the view model.
@@ -95,6 +99,17 @@ struct BirthdayEditorView: View {
     private func monthName(for month: Int) -> String {
         let formatter = DateFormatter()
         return formatter.monthSymbols[month - 1]
+    }
+
+    private func rescheduleReminders() async throws {
+        let settings: AppSettings
+        if let existingSettings = appSettings.first {
+            settings = existingSettings
+        } else {
+            settings = try AppSettingsStore(modelContext: modelContext).fetchOrCreate()
+        }
+        let records = try modelContext.fetch(FetchDescriptor<BirthdayRecord>())
+        try await ReminderScheduler().syncAll(records: records, settings: settings)
     }
 }
 

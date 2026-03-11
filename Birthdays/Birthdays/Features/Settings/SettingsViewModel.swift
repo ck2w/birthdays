@@ -18,7 +18,11 @@ final class SettingsViewModel: ObservableObject {
 
     private let permissionClient: NotificationPermissionClient
 
-    init(permissionClient: NotificationPermissionClient = .live) {
+    init() {
+        self.permissionClient = .live
+    }
+
+    init(permissionClient: NotificationPermissionClient) {
         self.permissionClient = permissionClient
     }
 
