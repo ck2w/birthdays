@@ -8,10 +8,12 @@
 import XCTest
 @testable import Birthdays
 
+@MainActor
 final class BirthdaysTests: XCTestCase {
     private var calendar: Calendar!
     private var calculator: BirthdayCalculator!
     private var sorter: BirthdaySorter!
+    private var editorViewModel: BirthdayEditorViewModel!
 
     override func setUp() {
         var gregorian = Calendar(identifier: .gregorian)
@@ -19,9 +21,11 @@ final class BirthdaysTests: XCTestCase {
         calendar = gregorian
         calculator = BirthdayCalculator(calendar: gregorian)
         sorter = BirthdaySorter(calculator: calculator)
+        editorViewModel = BirthdayEditorViewModel(calendar: gregorian)
     }
 
     override func tearDown() {
+        editorViewModel = nil
         sorter = nil
         calculator = nil
         calendar = nil
@@ -153,6 +157,73 @@ final class BirthdaysTests: XCTestCase {
 
         XCTAssertEqual(sections[0].rows[0].subtitle, "Turns 34 on March 14")
         XCTAssertEqual(sections[0].rows[1].subtitle, "Birthday on March 15")
+    }
+
+    @MainActor
+    func testEditorRejectsMissingName() {
+        editorViewModel.month = 3
+        editorViewModel.day = 14
+
+        XCTAssertFalse(editorViewModel.isValid)
+        XCTAssertThrowsError(
+            try editorViewModel.save { _ in
+                XCTFail("Save should not run when the form is invalid.")
+            }
+        )
+        XCTAssertEqual(editorViewModel.validationMessage, "Name is required.")
+    }
+
+    @MainActor
+    func testEditorProducesRecordWithOptionalBirthYear() throws {
+        editorViewModel.name = "Alex"
+        editorViewModel.month = 3
+        editorViewModel.day = 14
+        editorViewModel.birthYearText = ""
+        editorViewModel.remindersDisabled = true
+
+        var capturedDraft: BirthdayDraft?
+        try editorViewModel.save { draft in
+            capturedDraft = draft
+        }
+
+        XCTAssertEqual(
+            capturedDraft,
+            BirthdayDraft(
+                name: "Alex",
+                month: 3,
+                day: 14,
+                birthYear: nil,
+                remindersDisabled: true
+            )
+        )
+    }
+
+    @MainActor
+    func testEditorUpdatesExistingRecordFields() {
+        let existing = BirthdayRecord(name: "Taylor", month: 1, day: 1, birthYear: 1990)
+        let editViewModel = BirthdayEditorViewModel(record: existing, calendar: calendar)
+        editViewModel.name = "Taylor Swift"
+        editViewModel.month = 12
+        editViewModel.day = 13
+        editViewModel.birthYearText = "1989"
+        editViewModel.remindersDisabled = true
+        let now = makeDate(year: 2026, month: 3, day: 11)
+
+        let draft = BirthdayDraft(
+            name: "Taylor Swift",
+            month: 12,
+            day: 13,
+            birthYear: 1989,
+            remindersDisabled: true
+        )
+        editViewModel.update(record: existing, with: draft, now: now)
+
+        XCTAssertEqual(existing.name, "Taylor Swift")
+        XCTAssertEqual(existing.month, 12)
+        XCTAssertEqual(existing.day, 13)
+        XCTAssertEqual(existing.birthYear, 1989)
+        XCTAssertTrue(existing.remindersDisabled)
+        XCTAssertEqual(existing.updatedAt, now)
     }
 
     private func makeDate(year: Int, month: Int, day: Int) -> Date {

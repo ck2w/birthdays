@@ -13,6 +13,7 @@ struct BirthdayListView: View {
     @Query private var birthdays: [BirthdayRecord]
     @Query private var appSettings: [AppSettings]
     @State private var sortOption: BirthdaySortOption = .date
+    @State private var activeSheet: BirthdaySheet?
 
     private let viewModel = BirthdayListViewModel()
 
@@ -24,7 +25,7 @@ struct BirthdayListView: View {
                         title: "No birthdays yet",
                         message: "Add the first birthday you want to track. Upcoming birthdays will appear here.",
                         buttonTitle: "Add Birthday",
-                        action: {}
+                        action: { activeSheet = .create }
                     )
                 } else {
                     ScrollView {
@@ -36,7 +37,14 @@ struct BirthdayListView: View {
                                         .foregroundStyle(.secondary)
 
                                     ForEach(section.rows) { row in
-                                        BirthdayRowView(row: row)
+                                        Button {
+                                            if let record = birthdays.first(where: { $0.id == row.id }) {
+                                                activeSheet = .edit(record)
+                                            }
+                                        } label: {
+                                            BirthdayRowView(row: row)
+                                        }
+                                        .buttonStyle(.plain)
                                     }
                                 }
                             }
@@ -59,11 +67,19 @@ struct BirthdayListView: View {
                 ToolbarItemGroup(placement: .topBarTrailing) {
                     SortMenuView(selection: $sortOption)
 
-                    Button(action: {}) {
+                    Button(action: { activeSheet = .create }) {
                         Image(systemName: "plus")
                     }
                     .accessibilityLabel("Add birthday")
                 }
+            }
+        }
+        .sheet(item: $activeSheet) { sheet in
+            switch sheet {
+            case .create:
+                BirthdayEditorView()
+            case .edit(let record):
+                BirthdayEditorView(record: record)
             }
         }
         .task {
@@ -86,6 +102,20 @@ struct BirthdayListView: View {
 
     private var currentFallback: Feb29Fallback {
         appSettings.first?.feb29Fallback ?? .feb28
+    }
+}
+
+enum BirthdaySheet: Identifiable {
+    case create
+    case edit(BirthdayRecord)
+
+    var id: String {
+        switch self {
+        case .create:
+            return "create"
+        case .edit(let record):
+            return "edit-\(record.id.uuidString)"
+        }
     }
 }
 
