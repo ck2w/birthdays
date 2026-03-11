@@ -42,6 +42,10 @@ Not currently available in Personal Team mode:
 - UserNotifications
 - XCTest / XCUITest
 
+## Preview 📱
+
+![Birthdays home screen](docs/images/home-screen.png)
+
 ## Project Structure 📁
 
 ```text
