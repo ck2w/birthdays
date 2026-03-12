@@ -14,6 +14,7 @@ final class BirthdayEditorViewModel: ObservableObject {
     @Published var month: Int
     @Published var day: Int
     @Published var birthYearText: String
+    @Published var remark: String
     @Published var remindersDisabled: Bool
     @Published var validationMessage: String?
 
@@ -29,6 +30,7 @@ final class BirthdayEditorViewModel: ObservableObject {
         self.month = record?.month ?? 1
         self.day = record?.day ?? 1
         self.birthYearText = record?.birthYear.map(String.init) ?? ""
+        self.remark = record?.remark ?? ""
         self.remindersDisabled = record?.remindersDisabled ?? false
     }
 
@@ -43,6 +45,7 @@ final class BirthdayEditorViewModel: ObservableObject {
                 month: month,
                 day: day,
                 birthYear: Int(birthYearText),
+                remark: remark.trimmingCharacters(in: .whitespacesAndNewlines),
                 remindersDisabled: remindersDisabled
             )
             try persist(draft)
@@ -59,6 +62,7 @@ final class BirthdayEditorViewModel: ObservableObject {
         record.month = draft.month
         record.day = draft.day
         record.birthYear = draft.birthYear
+        record.remark = draft.remark
         record.remindersDisabled = draft.remindersDisabled
         record.updatedAt = now
     }
@@ -69,6 +73,7 @@ final class BirthdayEditorViewModel: ObservableObject {
             month: draft.month,
             day: draft.day,
             birthYear: draft.birthYear,
+            remark: draft.remark,
             remindersDisabled: draft.remindersDisabled,
             createdAt: now,
             updatedAt: now
@@ -108,6 +113,7 @@ struct BirthdayDraft: Equatable {
     let month: Int
     let day: Int
     let birthYear: Int?
+    let remark: String
     let remindersDisabled: Bool
 }
 

@@ -179,6 +179,7 @@ final class BirthdaysTests: XCTestCase {
         editorViewModel.month = 3
         editorViewModel.day = 14
         editorViewModel.birthYearText = ""
+        editorViewModel.remark = "  Likes books and jazz  "
         editorViewModel.remindersDisabled = true
 
         var capturedDraft: BirthdayDraft?
@@ -193,6 +194,7 @@ final class BirthdaysTests: XCTestCase {
                 month: 3,
                 day: 14,
                 birthYear: nil,
+                remark: "Likes books and jazz",
                 remindersDisabled: true
             )
         )
@@ -206,6 +208,7 @@ final class BirthdaysTests: XCTestCase {
         editViewModel.month = 12
         editViewModel.day = 13
         editViewModel.birthYearText = "1989"
+        editViewModel.remark = "Prefers vinyl records"
         editViewModel.remindersDisabled = true
         let now = makeDate(year: 2026, month: 3, day: 11)
 
@@ -214,6 +217,7 @@ final class BirthdaysTests: XCTestCase {
             month: 12,
             day: 13,
             birthYear: 1989,
+            remark: "Prefers vinyl records",
             remindersDisabled: true
         )
         editViewModel.update(record: existing, with: draft, now: now)
@@ -222,6 +226,7 @@ final class BirthdaysTests: XCTestCase {
         XCTAssertEqual(existing.month, 12)
         XCTAssertEqual(existing.day, 13)
         XCTAssertEqual(existing.birthYear, 1989)
+        XCTAssertEqual(existing.remark, "Prefers vinyl records")
         XCTAssertTrue(existing.remindersDisabled)
         XCTAssertEqual(existing.updatedAt, now)
     }

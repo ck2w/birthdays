@@ -47,6 +47,12 @@ struct BirthdayEditorView: View {
                         .accessibilityIdentifier("birthday_year_field")
                 }
 
+                Section("Remark") {
+                    TextField("Anything you want to remember", text: $viewModel.remark, axis: .vertical)
+                        .lineLimit(3...6)
+                        .accessibilityIdentifier("birthday_remark_field")
+                }
+
                 Section("Reminders") {
                     Toggle("Disable reminders for this person", isOn: $viewModel.remindersDisabled)
                         .accessibilityIdentifier("birthday_disable_reminders_toggle")
