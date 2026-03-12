@@ -7,12 +7,28 @@
 
 import SwiftData
 import SwiftUI
+import UniformTypeIdentifiers
+
+private struct ExportFile: Identifiable {
+    let id = UUID()
+    let url: URL
+}
+
+private struct SettingsAlertState: Identifiable {
+    let id = UUID()
+    let title: String
+    let message: String
+}
 
 struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     @Query private var appSettings: [AppSettings]
+    @Query private var birthdays: [BirthdayRecord]
     @StateObject private var viewModel = SettingsViewModel()
+    @State private var showingCSVImporter = false
+    @State private var exportFile: ExportFile?
+    @State private var alertState: SettingsAlertState?
 
     var body: some View {
         NavigationStack {
@@ -64,6 +80,18 @@ struct SettingsView: View {
                     }
                     .accessibilityIdentifier("settings_feb29_picker")
                 }
+
+                Section("Data") {
+                    Button("Import CSV") {
+                        showingCSVImporter = true
+                    }
+                    .accessibilityIdentifier("settings_import_csv_button")
+
+                    Button("Export CSV") {
+                        exportCSV()
+                    }
+                    .accessibilityIdentifier("settings_export_csv_button")
+                }
             }
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
@@ -93,6 +121,23 @@ struct SettingsView: View {
         }
         .onChange(of: viewModel.feb29Fallback) { _, _ in
             persistSettingsAndReschedule()
+        }
+        .fileImporter(
+            isPresented: $showingCSVImporter,
+            allowedContentTypes: [.commaSeparatedText, .plainText],
+            allowsMultipleSelection: false
+        ) { result in
+            handleImportResult(result)
+        }
+        .sheet(item: $exportFile) { item in
+            ActivityView(activityItems: [item.url])
+        }
+        .alert(item: $alertState) { state in
+            Alert(
+                title: Text(state.title),
+                message: Text(state.message),
+                dismissButton: .default(Text("OK"))
+            )
         }
     }
 
@@ -127,6 +172,96 @@ struct SettingsView: View {
         }
         let records = try modelContext.fetch(FetchDescriptor<BirthdayRecord>())
         try await ReminderScheduler().syncAll(records: records, settings: settings)
+    }
+
+    private func handleImportResult(_ result: Result<[URL], Error>) {
+        switch result {
+        case .success(let urls):
+            guard let url = urls.first else { return }
+            importCSV(from: url)
+        case .failure(let error):
+            alertState = SettingsAlertState(
+                title: "Import Failed",
+                message: error.localizedDescription
+            )
+        }
+    }
+
+    private func importCSV(from url: URL) {
+        Task { @MainActor in
+            let didAccess = url.startAccessingSecurityScopedResource()
+            defer {
+                if didAccess {
+                    url.stopAccessingSecurityScopedResource()
+                }
+            }
+
+            do {
+                let data = try Data(contentsOf: url)
+                guard let text = String(data: data, encoding: .utf8) else {
+                    throw CocoaError(.fileReadInapplicableStringEncoding)
+                }
+
+                let service = BirthdayCSVService()
+                let result = try service.import(from: text)
+
+                for record in result.records {
+                    modelContext.insert(
+                        BirthdayRecord(
+                            name: record.name,
+                            month: record.month,
+                            day: record.day,
+                            birthYear: record.birthYear,
+                            remark: record.remark
+                        )
+                    )
+                }
+
+                try modelContext.save()
+                try await rescheduleReminders()
+
+                alertState = SettingsAlertState(
+                    title: "Import Complete",
+                    message: importMessage(for: result)
+                )
+            } catch {
+                alertState = SettingsAlertState(
+                    title: "Import Failed",
+                    message: error.localizedDescription
+                )
+            }
+        }
+    }
+
+    private func exportCSV() {
+        do {
+            let service = BirthdayCSVService()
+            let csv = service.export(records: birthdays)
+            let url = try makeExportFile(contents: csv)
+            exportFile = ExportFile(url: url)
+        } catch {
+            alertState = SettingsAlertState(
+                title: "Export Failed",
+                message: error.localizedDescription
+            )
+        }
+    }
+
+    private func makeExportFile(contents: String) throws -> URL {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        let fileName = "Birthdays-\(formatter.string(from: .now)).csv"
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
+        try contents.write(to: url, atomically: true, encoding: .utf8)
+        return url
+    }
+
+    private func importMessage(for result: BirthdayCSVImportResult) -> String {
+        if result.skippedRowCount == 0 {
+            return "Imported \(result.records.count) birthday entries."
+        }
+
+        return "Imported \(result.records.count) birthday entries and skipped \(result.skippedRowCount) invalid rows."
     }
 }
 

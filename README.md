@@ -15,6 +15,7 @@ Right now the project is set up for local development with a Personal Team in Xc
 - Configurable notification time
 - February 29 fallback handling
 - Swipe-to-delete from the birthday list
+- CSV import and export
 - Local persistence with SwiftData
 - Local notifications with `UserNotifications`
 
@@ -27,6 +28,7 @@ Implemented:
 - Settings screen
 - Reminder scheduling
 - Notification permission handling
+- CSV import and export
 - Local data persistence
 - UI test scaffolding for core flows
 
@@ -120,7 +122,7 @@ xcodebuild -project Birthdays/Birthdays.xcodeproj -scheme Birthdays -destination
 - Finish full manual verification checklist
 - Stabilize full test runs in the local environment
 - Re-enable CloudKit when a paid developer account is available
-- Add CSV import/export in a later version
+- Improve CSV import validation and conflict handling
 
 ## Documentation 📚
 

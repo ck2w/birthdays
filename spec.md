@@ -20,11 +20,11 @@ Build an iPhone-only birthday app that lets users manually record birthdays, rec
 - February 29 fallback handling in non-leap years
 - Local notifications
 - Local on-device persistence with SwiftData
+- CSV import and export for `name`, `birthday`, and `remarks`
 - Future-ready iCloud sync support for birthday records and app settings
 
 ### Out of Scope
 
-- CSV import/export
 - Contacts import
 - iPad support
 - Apple Watch support
@@ -135,6 +135,14 @@ Example notification copy:
 
 Opening a notification can launch the app to the birthday list in v1.
 
+## Import and Export Behavior
+
+- Export CSV columns as `name,birthday,remarks`
+- `birthday` uses `YYYY-MM-DD` when a birth year exists
+- `birthday` uses `--MM-DD` when the birth year is unknown
+- Import accepts the same format and creates new records without deduplication
+- Invalid CSV rows are skipped and reported after import
+
 ## Sync Behavior
 
 - In the current Personal Team setup, store birthday records locally with SwiftData
@@ -197,6 +205,7 @@ Opening a notification can launch the app to the birthday list in v1.
 - UserNotifications for local reminders
 - Small focused services for:
   - date calculation
+  - CSV import/export
   - sorting
   - reminder scheduling
   - notification permission status

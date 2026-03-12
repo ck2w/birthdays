@@ -73,11 +73,20 @@
 - [ ] Set Apple Team and confirm iCloud container in Xcode Signing & Capabilities
 - [ ] Verify sync on a second signed-in device or simulator pair
 
-## 9. Final Verification
+## 9. CSV Import and Export
+
+- [x] Add CSV export with `name`, `birthday`, and `remarks` columns
+- [x] Add CSV import from the system file picker
+- [x] Support `YYYY-MM-DD` and `--MM-DD` birthday formats
+- [x] Skip invalid rows without deduplicating repeated people
+- [x] Add unit tests for CSV parsing and formatting
+
+## 10. Final Verification
 
 - [ ] Run full unit test suite
 - [ ] Run full UI test suite
 - [x] Build the app successfully with `xcodebuild`
+- [x] Manually verify CSV import and export
 - [ ] Manually verify:
   - [x] create birthday without year
   - [x] create birthday with year
