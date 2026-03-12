@@ -17,7 +17,16 @@ struct BirthdayCSVRecord: Equatable {
 
 struct BirthdayCSVImportResult: Equatable {
     let records: [BirthdayCSVRecord]
-    let skippedRowCount: Int
+    let skippedRows: [BirthdayCSVSkippedRow]
+
+    var skippedRowCount: Int {
+        skippedRows.count
+    }
+}
+
+struct BirthdayCSVSkippedRow: Equatable {
+    let rowNumber: Int
+    let reason: String
 }
 
 enum BirthdayCSVError: LocalizedError {
@@ -78,15 +87,21 @@ struct BirthdayCSVService {
         let remarkIndex = normalizedHeader.firstIndex(where: { $0 == "remark" || $0 == "remarks" })
 
         var importedRecords: [BirthdayCSVRecord] = []
-        var skippedRowCount = 0
+        var skippedRows: [BirthdayCSVSkippedRow] = []
 
-        for row in rows.dropFirst() {
+        for (offset, row) in rows.dropFirst().enumerated() {
+            let rowNumber = offset + 2
             let name = field(at: nameIndex, in: row)
             let birthday = field(at: birthdayIndex, in: row)
             let remark = field(at: remarkIndex, in: row)
 
-            guard !name.isEmpty, !birthday.isEmpty else {
-                skippedRowCount += 1
+            guard !name.isEmpty else {
+                skippedRows.append(BirthdayCSVSkippedRow(rowNumber: rowNumber, reason: "Missing name"))
+                continue
+            }
+
+            guard !birthday.isEmpty else {
+                skippedRows.append(BirthdayCSVSkippedRow(rowNumber: rowNumber, reason: "Missing birthday"))
                 continue
             }
 
@@ -102,11 +117,11 @@ struct BirthdayCSVService {
                     )
                 )
             } catch {
-                skippedRowCount += 1
+                skippedRows.append(BirthdayCSVSkippedRow(rowNumber: rowNumber, reason: "Unsupported birthday format"))
             }
         }
 
-        return BirthdayCSVImportResult(records: importedRecords, skippedRowCount: skippedRowCount)
+        return BirthdayCSVImportResult(records: importedRecords, skippedRows: skippedRows)
     }
 
     private func formattedBirthday(for record: BirthdayRecord) -> String {

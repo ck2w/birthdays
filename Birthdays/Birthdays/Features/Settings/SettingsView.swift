@@ -28,6 +28,7 @@ struct SettingsView: View {
     @StateObject private var viewModel = SettingsViewModel()
     @State private var showingCSVImporter = false
     @State private var exportFile: ExportFile?
+    @State private var importPreviewState: CSVImportPreviewState?
     @State private var alertState: SettingsAlertState?
 
     var body: some View {
@@ -149,6 +150,17 @@ struct SettingsView: View {
         .sheet(item: $exportFile) { item in
             ActivityView(activityItems: [item.url])
         }
+        .sheet(item: $importPreviewState) { state in
+            CSVImportPreviewView(
+                state: state,
+                onCancel: {
+                    importPreviewState = nil
+                },
+                onImport: {
+                    confirmImport(with: state)
+                }
+            )
+        }
         .alert(item: $alertState) { state in
             Alert(
                 title: Text(state.title),
@@ -195,7 +207,7 @@ struct SettingsView: View {
         switch result {
         case .success(let urls):
             guard let url = urls.first else { return }
-            importCSV(from: url)
+            loadImportPreview(from: url)
         case .failure(let error):
             alertState = SettingsAlertState(
                 title: "Import Failed",
@@ -204,7 +216,7 @@ struct SettingsView: View {
         }
     }
 
-    private func importCSV(from url: URL) {
+    private func loadImportPreview(from url: URL) {
         Task { @MainActor in
             let didAccess = url.startAccessingSecurityScopedResource()
             defer {
@@ -221,8 +233,20 @@ struct SettingsView: View {
 
                 let service = BirthdayCSVService()
                 let result = try service.import(from: text)
+                importPreviewState = CSVImportPreviewState(result: result)
+            } catch {
+                alertState = SettingsAlertState(
+                    title: "Import Failed",
+                    message: error.localizedDescription
+                )
+            }
+        }
+    }
 
-                for record in result.records {
+    private func confirmImport(with state: CSVImportPreviewState) {
+        Task { @MainActor in
+            do {
+                for record in state.result.records {
                     modelContext.insert(
                         BirthdayRecord(
                             name: record.name,
@@ -237,9 +261,10 @@ struct SettingsView: View {
                 try modelContext.save()
                 try await rescheduleReminders()
 
+                importPreviewState = nil
                 alertState = SettingsAlertState(
                     title: "Import Complete",
-                    message: importMessage(for: result)
+                    message: importMessage(for: state.result)
                 )
             } catch {
                 alertState = SettingsAlertState(

@@ -8,6 +8,7 @@
 import XCTest
 @testable import Birthdays
 
+@MainActor
 final class BirthdayCSVServiceTests: XCTestCase {
     private var service: BirthdayCSVService!
 
@@ -55,7 +56,7 @@ final class BirthdayCSVServiceTests: XCTestCase {
                     BirthdayCSVRecord(name: "Alex", month: 3, day: 14, birthYear: 1992, remark: "Likes jazz"),
                     BirthdayCSVRecord(name: "Chris", month: 9, day: 10, birthYear: nil, remark: "MBTI: INTJ")
                 ],
-                skippedRowCount: 0
+                skippedRows: []
             )
         )
     }
@@ -82,8 +83,30 @@ final class BirthdayCSVServiceTests: XCTestCase {
                         remark: "Likes books, jazz, and tea"
                     )
                 ],
-                skippedRowCount: 2
+                skippedRows: [
+                    BirthdayCSVSkippedRow(rowNumber: 3, reason: "Unsupported birthday format"),
+                    BirthdayCSVSkippedRow(rowNumber: 4, reason: "Missing birthday")
+                ]
             )
+        )
+    }
+
+    func testImportReportsSkippedRowDetails() throws {
+        let csv = """
+        name,birthday,remarks
+        Alex,1992-03-14,Likes jazz
+        ,1992-05-01,Missing name
+        Taylor,not-a-date,Invalid date
+        """
+
+        let result = try service.import(from: csv)
+
+        XCTAssertEqual(
+            result.skippedRows,
+            [
+                BirthdayCSVSkippedRow(rowNumber: 3, reason: "Missing name"),
+                BirthdayCSVSkippedRow(rowNumber: 4, reason: "Unsupported birthday format")
+            ]
         )
     }
 }
