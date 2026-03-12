@@ -31,7 +31,7 @@ struct BirthdayListView: View {
                 } else {
                     List {
                         ForEach(sections) { section in
-                            Section(section.title) {
+                            Section {
                                 ForEach(section.rows) { row in
                                     Button {
                                         if let record = birthdays.first(where: { $0.id == row.id }) {
@@ -41,8 +41,9 @@ struct BirthdayListView: View {
                                         BirthdayRowView(row: row)
                                     }
                                     .buttonStyle(.plain)
-                                    .listRowInsets(EdgeInsets(top: 10, leading: 16, bottom: 10, trailing: 16))
+                                    .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 16))
                                     .listRowBackground(Color(.secondarySystemGroupedBackground))
+                                    .listRowSeparator(.hidden)
                                     .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                                         Button("Delete", role: .destructive) {
                                             Task {
@@ -51,9 +52,18 @@ struct BirthdayListView: View {
                                         }
                                     }
                                 }
+                            } header: {
+                                Text(section.title)
+                                    .font(.system(size: 17, weight: .semibold, design: .rounded))
+                                    .foregroundStyle(.secondary)
+                                    .textCase(nil)
+                                    .padding(.top, 6)
+                                    .padding(.bottom, 2)
                             }
                         }
                     }
+                    .listStyle(.insetGrouped)
+                    .listSectionSpacing(12)
                     .scrollContentBackground(.hidden)
                     .background(Color(.systemGroupedBackground))
                 }

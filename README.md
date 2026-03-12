@@ -44,7 +44,7 @@ Not currently available in Personal Team mode:
 
 ## Preview 📱
 
-![Birthdays home screen](docs/images/home-screen.png)
+<img src="docs/images/home-screen.png" alt="Birthdays home screen" width="30%" />
 
 ## Project Structure 📁
 
