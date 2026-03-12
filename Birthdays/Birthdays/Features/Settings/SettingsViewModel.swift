@@ -27,7 +27,7 @@ final class SettingsViewModel: ObservableObject {
 
     init(
         permissionClient: NotificationPermissionClient,
-        testNotificationScheduler: TestNotificationScheduler = TestNotificationScheduler()
+        testNotificationScheduler: TestNotificationScheduler
     ) {
         self.permissionClient = permissionClient
         self.testNotificationScheduler = testNotificationScheduler

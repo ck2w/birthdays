@@ -10,8 +10,11 @@ import XCTest
 
 @MainActor
 final class SettingsViewModelTests: XCTestCase {
-    func testLoadCopiesSettingsValues() {
-        let viewModel = SettingsViewModel(permissionClient: .init(getStatus: { .authorized }, requestAccess: { true }))
+    func testLoadCopiesSettingsValues() async {
+        let viewModel = SettingsViewModel(
+            permissionClient: .init(getStatus: { .authorized }, requestAccess: { true }),
+            testNotificationScheduler: makeTestNotificationScheduler()
+        )
         let settings = AppSettings(
             remindersEnabled: true,
             reminderOffset: .sevenDaysBefore,
@@ -31,7 +34,10 @@ final class SettingsViewModelTests: XCTestCase {
     }
 
     func testLoadPermissionStatusReadsClient() async {
-        let viewModel = SettingsViewModel(permissionClient: .init(getStatus: { .denied }, requestAccess: { false }))
+        let viewModel = SettingsViewModel(
+            permissionClient: .init(getStatus: { .denied }, requestAccess: { false }),
+            testNotificationScheduler: makeTestNotificationScheduler()
+        )
 
         await viewModel.loadPermissionStatus()
 
@@ -61,12 +67,22 @@ final class SettingsViewModelTests: XCTestCase {
 
     func testSendTestNotificationShowsMessageWhenDenied() async {
         let viewModel = SettingsViewModel(
-            permissionClient: .init(getStatus: { .denied }, requestAccess: { false })
+            permissionClient: .init(getStatus: { .denied }, requestAccess: { false }),
+            testNotificationScheduler: makeTestNotificationScheduler()
         )
         viewModel.permissionStatus = .denied
 
         await viewModel.sendTestNotification()
 
         XCTAssertEqual(viewModel.statusMessage, "Notifications are not available. Enable them in iOS Settings first.")
+    }
+
+    private func makeTestNotificationScheduler() -> TestNotificationScheduler {
+        TestNotificationScheduler(
+            notificationCenter: NotificationCenterClient(
+                add: { _ in },
+                removePending: { _ in }
+            )
+        )
     }
 }

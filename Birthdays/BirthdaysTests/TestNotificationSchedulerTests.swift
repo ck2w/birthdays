@@ -9,6 +9,7 @@ import XCTest
 import UserNotifications
 @testable import Birthdays
 
+@MainActor
 final class TestNotificationSchedulerTests: XCTestCase {
     func testScheduleAddsTimeIntervalNotificationRequest() async throws {
         var capturedRequest: UNNotificationRequest?
