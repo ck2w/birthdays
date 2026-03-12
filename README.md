@@ -8,11 +8,13 @@ Right now the project is set up for local development with a Personal Team in Xc
 
 - Manual birthday creation and editing
 - Required month/day with optional birth year
+- Free-form remarks for gift ideas, MBTI, and other notes
 - Birthday list grouped by month
 - Sorting by upcoming date, first name, and last name
 - Global reminder settings
 - Per-person reminder disable switch
 - Configurable notification time
+- Send Test Notification from settings
 - February 29 fallback handling
 - Swipe-to-delete from the birthday list
 - CSV import and export
@@ -28,6 +30,7 @@ Implemented:
 - Settings screen
 - Reminder scheduling
 - Notification permission handling
+- Test notification flow
 - CSV import and export
 - Local data persistence
 - UI test scaffolding for core flows
@@ -119,9 +122,9 @@ xcodebuild -project Birthdays/Birthdays.xcodeproj -scheme Birthdays -destination
 
 ## Roadmap 🗺️
 
-- Finish full manual verification checklist
 - Stabilize full test runs in the local environment
 - Re-enable CloudKit when a paid developer account is available
+- Add CSV import preview before confirming import
 - Improve CSV import validation and conflict handling
 
 ## Documentation 📚

@@ -53,6 +53,7 @@
 - [x] Build settings view model
 - [x] Build settings screen
 - [x] Handle denied notification permission state
+- [x] Add send test notification flow
 - [x] Add UI tests for settings interactions
 
 ## 7. Reminder Scheduling
@@ -87,6 +88,7 @@
 - [ ] Run full UI test suite
 - [x] Build the app successfully with `xcodebuild`
 - [x] Manually verify CSV import and export
+- [x] Manually verify test notification delivery
 - [ ] Manually verify:
   - [x] create birthday without year
   - [x] create birthday with year

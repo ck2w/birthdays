@@ -61,6 +61,7 @@ Example row copy:
   - name required
   - month/day required
   - birth year optional
+  - remark optional
   - disable reminders for this person toggle
 - Tapping a row opens edit directly
 - No separate read-only detail screen in v1
@@ -69,6 +70,7 @@ Example row copy:
 
 - Global reminder enable/disable
 - Requests notification permission the first time reminders are enabled
+- Includes a test notification action for local reminder verification
 - Reminder offset options:
   - same day
   - 1 day before
@@ -95,6 +97,7 @@ Example row copy:
 - `month`
 - `day`
 - `birthYear?`
+- `remark`
 - `remindersDisabled`
 - `createdAt`
 - `updatedAt`
@@ -184,6 +187,7 @@ Opening a notification can launch the app to the birthday list in v1.
 - User opens settings
 - Enables reminders or updates reminder rule/time
 - App requests notification permission if needed
+- User can send a test notification to verify local notification delivery
 - App persists settings
 - App rebuilds reminders
 
@@ -215,6 +219,8 @@ Opening a notification can launch the app to the birthday list in v1.
 - Unit tests for date logic
 - Unit tests for sorting
 - Unit tests for reminder scheduling
+- Unit tests for CSV parsing and formatting
+- Unit tests for test notification scheduling
 - Unit tests for settings persistence
 - UI tests for list flow
 - UI tests for settings flow
