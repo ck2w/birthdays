@@ -84,12 +84,14 @@
 
 ## 10. Final Verification
 
+Note: full command-line unit/UI suite runs were intentionally skipped in the latest session because prior local manual verification was already accepted.
+
 - [ ] Run full unit test suite
 - [ ] Run full UI test suite
 - [x] Build the app successfully with `xcodebuild`
 - [x] Manually verify CSV import and export
 - [x] Manually verify test notification delivery
-- [ ] Manually verify:
+- [x] Manually verify:
   - [x] create birthday without year
   - [x] create birthday with year
   - [x] sort by date

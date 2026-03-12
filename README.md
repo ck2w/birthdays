@@ -34,6 +34,7 @@ Implemented:
 - CSV import and export
 - Local data persistence
 - UI test scaffolding for core flows
+- Local manual verification for primary user flows
 
 Not currently available in Personal Team mode:
 
@@ -122,10 +123,10 @@ xcodebuild -project Birthdays/Birthdays.xcodeproj -scheme Birthdays -destination
 
 ## Roadmap 🗺️
 
-- Stabilize full test runs in the local environment
 - Re-enable CloudKit when a paid developer account is available
 - Add CSV import preview before confirming import
 - Improve CSV import validation and conflict handling
+- Revisit command-line full test runs if stricter local automation is needed
 
 ## Documentation 📚
 
