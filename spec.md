@@ -21,6 +21,7 @@ Build an iPhone-only birthday app that lets users manually record birthdays, rec
 - Local notifications
 - Local on-device persistence with SwiftData
 - CSV import and export for `name`, `birthday`, and `remarks`
+- CSV import preview before confirming import
 - Future-ready iCloud sync support for birthday records and app settings
 
 ### Out of Scope
@@ -71,6 +72,7 @@ Example row copy:
 - Global reminder enable/disable
 - Requests notification permission the first time reminders are enabled
 - Includes a test notification action for local reminder verification
+- Includes a lightweight About section showing the author name
 - Reminder offset options:
   - same day
   - 1 day before
@@ -144,7 +146,9 @@ Opening a notification can launch the app to the birthday list in v1.
 - `birthday` uses `YYYY-MM-DD` when a birth year exists
 - `birthday` uses `--MM-DD` when the birth year is unknown
 - Import accepts the same format and creates new records without deduplication
-- Invalid CSV rows are skipped and reported after import
+- After file selection, show an import preview before writing records
+- Import preview shows valid records plus skipped-row summaries
+- Invalid CSV rows are skipped and reported in the preview and completion summary
 
 ## Sync Behavior
 
@@ -220,6 +224,7 @@ Opening a notification can launch the app to the birthday list in v1.
 - Unit tests for sorting
 - Unit tests for reminder scheduling
 - Unit tests for CSV parsing and formatting
+- Unit tests for CSV import preview state
 - Unit tests for test notification scheduling
 - Unit tests for settings persistence
 - UI tests for list flow

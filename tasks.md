@@ -80,16 +80,21 @@
 - [x] Add CSV import from the system file picker
 - [x] Support `YYYY-MM-DD` and `--MM-DD` birthday formats
 - [x] Skip invalid rows without deduplicating repeated people
+- [x] Add CSV import preview before confirming import
+- [x] Show skipped-row details during CSV import preview
 - [x] Add unit tests for CSV parsing and formatting
+- [x] Add unit tests for CSV import preview state
 
 ## 10. Final Verification
 
-Note: full command-line unit/UI suite runs were intentionally skipped in the latest session because prior local manual verification was already accepted.
+Note: the app is functionally complete for the current local-only scope. Remaining work is limited to optional full command-line suite stability and paid-developer CloudKit enablement.
+Note: full command-line unit/UI suite runs were intentionally not treated as blocking because prior local manual verification was already accepted, and later targeted `xcodebuild` retries hit simulator/test-runner instability instead of clear product regressions.
 
 - [ ] Run full unit test suite
 - [ ] Run full UI test suite
 - [x] Build the app successfully with `xcodebuild`
 - [x] Manually verify CSV import and export
+- [x] Manually verify CSV import preview before confirming import
 - [x] Manually verify test notification delivery
 - [x] Manually verify:
   - [x] create birthday without year
@@ -104,3 +109,11 @@ Note: full command-line unit/UI suite runs were intentionally skipped in the lat
   - [x] disable reminders for one person
   - [ ] after enabling paid developer account support, verify a newly added birthday syncs to another device
   - [ ] after enabling paid developer account support, verify a settings change syncs to another device
+
+## 11. Current Status
+
+- [x] Core birthday list, editor, settings, reminder scheduling, and CSV flows are implemented
+- [x] Local-only app behavior is manually verified and suitable for current use
+- [x] In-app author information is shown in Settings
+- [ ] Optional: stabilize and rerun full command-line unit/UI suites
+- [ ] Optional: enable paid-developer CloudKit capability and verify multi-device sync

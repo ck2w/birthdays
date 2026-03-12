@@ -110,6 +110,11 @@ struct SettingsView: View {
                             .foregroundStyle(.secondary)
                     }
                 }
+
+                Section("About") {
+                    LabeledContent("Author", value: "Ken Chen")
+                        .accessibilityIdentifier("settings_author_label")
+                }
             }
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
