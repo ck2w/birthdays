@@ -1,11 +1,16 @@
 # Birthdays 🎂
 
-Birthdays is a small iPhone app for keeping track of birthdays, setting reminders, and making sure important dates do not quietly sneak past you.
+Birthdays is a small iPhone app for keeping track of birthdays, setting reminders, and moving birthday data across platforms with CSV import and export.
+
+The key idea is simple: even if you are not using iCloud sync, your birthday data is not trapped inside one app or one Apple device. You can export to CSV, keep a backup, and import the same data somewhere else later.
 
 Right now the project is set up for local development with a Personal Team in Xcode. Birthday data is stored locally with SwiftData, and the app keeps a future path open for CloudKit-backed iCloud sync when a paid Apple Developer account is available.
 
 ## What It Does ✨
 
+- CSV export for easy backup and cross-platform data migration
+- CSV import preview before confirming changes
+- CSV import support for `YYYY-MM-DD` and `--MM-DD` birthdays
 - Manual birthday creation and editing
 - Required month/day with optional birth year
 - Free-form remarks for gift ideas, MBTI, and other notes
@@ -17,7 +22,6 @@ Right now the project is set up for local development with a Personal Team in Xc
 - Send Test Notification from settings
 - February 29 fallback handling
 - Swipe-to-delete from the birthday list
-- CSV import and export
 - Local persistence with SwiftData
 - Local notifications with `UserNotifications`
 
@@ -25,13 +29,14 @@ Right now the project is set up for local development with a Personal Team in Xc
 
 Implemented:
 
+- CSV import and export with preview before import confirmation
+- Local backup and cross-platform migration through CSV
 - Birthday list UI
 - Add/edit birthday flow
 - Settings screen
 - Reminder scheduling
 - Notification permission handling
 - Test notification flow
-- CSV import and export
 - Local data persistence
 - UI test scaffolding for core flows
 - Local manual verification for primary user flows
@@ -124,7 +129,6 @@ xcodebuild -project Birthdays/Birthdays.xcodeproj -scheme Birthdays -destination
 ## Roadmap 🗺️
 
 - Re-enable CloudKit when a paid developer account is available
-- Add CSV import preview before confirming import
 - Improve CSV import validation and conflict handling
 - Revisit command-line full test runs if stricter local automation is needed
 
