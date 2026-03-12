@@ -15,15 +15,22 @@ final class SettingsViewModel: ObservableObject {
     @Published var notificationTime: Date = .now
     @Published var feb29Fallback: Feb29Fallback = .feb28
     @Published var permissionStatus: NotificationPermissionStatus = .notDetermined
+    @Published var statusMessage: String?
 
     private let permissionClient: NotificationPermissionClient
+    private let testNotificationScheduler: TestNotificationScheduler
 
     init() {
         self.permissionClient = .live
+        self.testNotificationScheduler = TestNotificationScheduler()
     }
 
-    init(permissionClient: NotificationPermissionClient) {
+    init(
+        permissionClient: NotificationPermissionClient,
+        testNotificationScheduler: TestNotificationScheduler = TestNotificationScheduler()
+    ) {
         self.permissionClient = permissionClient
+        self.testNotificationScheduler = testNotificationScheduler
     }
 
     func load(from settings: AppSettings) {
@@ -56,6 +63,29 @@ final class SettingsViewModel: ObservableObject {
         }
 
         try updateSettings(using: update)
+    }
+
+    func sendTestNotification() async {
+        if permissionStatus == .notDetermined {
+            let granted = await permissionClient.requestAccess()
+            permissionStatus = await permissionClient.getStatus()
+            guard granted, permissionStatus.allowsNotifications else {
+                statusMessage = "Notifications are not available. Enable them in iOS Settings first."
+                return
+            }
+        }
+
+        guard permissionStatus.allowsNotifications else {
+            statusMessage = "Notifications are not available. Enable them in iOS Settings first."
+            return
+        }
+
+        do {
+            try await testNotificationScheduler.schedule()
+            statusMessage = "Test notification scheduled for a few seconds from now."
+        } catch {
+            statusMessage = "Failed to schedule the test notification."
+        }
     }
 
     private func updateSettings(using update: (AppSettings) throws -> Void) throws {

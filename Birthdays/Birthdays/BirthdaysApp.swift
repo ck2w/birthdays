@@ -10,6 +10,8 @@ import SwiftUI
 
 @main
 struct BirthdaysApp: App {
+    @UIApplicationDelegateAdaptor(NotificationDelegate.self) private var notificationDelegate
+
     private var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             BirthdayRecord.self,

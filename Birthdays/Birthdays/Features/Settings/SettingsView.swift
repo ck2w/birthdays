@@ -92,6 +92,23 @@ struct SettingsView: View {
                     }
                     .accessibilityIdentifier("settings_export_csv_button")
                 }
+
+                Section("Debug") {
+                    Button("Send Test Notification") {
+                        Task {
+                            await viewModel.sendTestNotification()
+                        }
+                    }
+                    .accessibilityIdentifier("settings_test_notification_button")
+                }
+
+                if let statusMessage = viewModel.statusMessage {
+                    Section {
+                        Text(statusMessage)
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+                }
             }
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)

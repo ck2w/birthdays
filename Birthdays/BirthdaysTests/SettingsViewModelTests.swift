@@ -37,4 +37,36 @@ final class SettingsViewModelTests: XCTestCase {
 
         XCTAssertEqual(viewModel.permissionStatus, .denied)
     }
+
+    func testSendTestNotificationSchedulesWhenAuthorized() async {
+        var scheduled = false
+        let viewModel = SettingsViewModel(
+            permissionClient: .init(getStatus: { .authorized }, requestAccess: { true }),
+            testNotificationScheduler: TestNotificationScheduler(
+                notificationCenter: NotificationCenterClient(
+                    add: { _ in
+                        scheduled = true
+                    },
+                    removePending: { _ in }
+                )
+            )
+        )
+        viewModel.permissionStatus = .authorized
+
+        await viewModel.sendTestNotification()
+
+        XCTAssertTrue(scheduled)
+        XCTAssertEqual(viewModel.statusMessage, "Test notification scheduled for a few seconds from now.")
+    }
+
+    func testSendTestNotificationShowsMessageWhenDenied() async {
+        let viewModel = SettingsViewModel(
+            permissionClient: .init(getStatus: { .denied }, requestAccess: { false })
+        )
+        viewModel.permissionStatus = .denied
+
+        await viewModel.sendTestNotification()
+
+        XCTAssertEqual(viewModel.statusMessage, "Notifications are not available. Enable them in iOS Settings first.")
+    }
 }
